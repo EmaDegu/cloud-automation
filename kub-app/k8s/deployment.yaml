@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hrm-app
+  namespace: hrm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hrm-app
+  template:
+    metadata:
+      labels:
+        app: hrm-app
+    spec:
+      containers:
+      - name: hrm-app
+        image: cs3-flask:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000

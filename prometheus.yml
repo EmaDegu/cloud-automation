@@ -1,0 +1,40 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+  # Default labels to identify the environment
+  external_labels:
+    environment: "dev"
+    region: "eu-central-1"
+
+# Remote write to Amazon Managed Service for Prometheus (AMP)
+remote_write:
+  - url: https://aps-workspaces.eu-central-1.amazonaws.com/workspaces/ws-9a3073a5-42b7-41c4-adb0-d40a5925d285/api/v1/remote_write
+    sigv4:
+      region: eu-central-1
+    queue_config:
+      max_samples_per_send: 1000
+      max_shards: 200
+      capacity: 2500
+
+# Scrape configurations
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Scrape node_exporter metrics (system metrics from EC2)
+  - job_name: "node_exporter"
+    static_configs:
+      - targets: ["localhost:9100"]
+
+  # Scrape your web app or backend API (example: Flask app)
+  - job_name: "web_app"
+    static_configs:
+      - targets: ["localhost:5000"]
+
+  # Optional: scrape other EC2 servers manually
+  # - job_name: "web_server_b"
+  #   static_configs:
+  #     - targets: ["10.0.32.5:9100", "10.0.48.5:9100"]
